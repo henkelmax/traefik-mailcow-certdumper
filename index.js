@@ -10,6 +10,7 @@ const acmeJsonPath = process.env.ACME_JSON_PATH || './acme.json'
 const domain = process.env.DOMAIN || 'example.com'
 const certificatePath = process.env.CERT_PATH || './cert.pem'
 const keyPath = process.env.KEY_PATH || './key.pem'
+const runAtStart = process.env.RUN_AT_START === 'true' || true
 
 
 if (process.env.NODE_ENV === 'production') {
@@ -19,9 +20,22 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 fs.watchFile(acmeJsonPath, (curr, prev) => {
-    try {
-        logger.info(`File ${acmeJsonPath} changed`)
+    dumpCerts()
+})
 
+logger.info('CertDumper started')
+logger.info(`Domain: '${acmeJsonPath}'`)
+logger.info(`ACME JSON path: '${domain}'`)
+logger.info(`Certificate path: '${certificatePath}'`)
+logger.info(`Key path: '${keyPath}'`)
+
+if (runAtStart) {
+    logger.info(`File ${acmeJsonPath} changed`)
+    dumpCerts()
+}
+
+function dumpCerts() {
+    try {
         const acmeJson = JSON.parse(fs.readFileSync(acmeJsonPath, 'utf8'))
         const cert = acmeJson.certHttp.Certificates.find(element => element.domain.main === domain)
 
@@ -39,31 +53,24 @@ fs.watchFile(acmeJsonPath, (curr, prev) => {
     } catch (err) {
         logger.error(`Error dumping certificates: ${err}`)
     }
-})
-
-logger.info('CertDumper started')
-logger.info(`Domain: '${acmeJsonPath}'`)
-logger.info(`ACME JSON path: '${domain}'`)
-logger.info(`Certificate path: '${certificatePath}'`)
-logger.info(`Key path: '${keyPath}'`)
-
+}
 
 function restartMailcow() {
     logger.info('Reloading postfix')
     let postfixResult = spawnSync('docker exec $(docker ps -qaf name=postfix-mailcow) postfix reload')
-    if (postfixResult.status !== 0){
+    if (postfixResult.status !== 0) {
         logger.error(`Reloading postfix failed with exit code ${postfixResult.status}`)
     }
 
     logger.info('Reloading nginx')
     let nginxResult = spawnSync('docker exec $(docker ps -qaf name=nginx-mailcow) nginx -s reload')
-    if (nginxResult.status !== 0){
+    if (nginxResult.status !== 0) {
         logger.error(`Reloading nginx failed with exit code ${nginxResult.status}`)
     }
 
     logger.info('Reloading dovecot')
     let dovecotResult = spawnSync('docker exec $(docker ps -qaf name=dovecot-mailcow) dovecot reload')
-    if (dovecotResult.status !== 0){
+    if (dovecotResult.status !== 0) {
         logger.error(`Reloading dovecot failed with exit code ${dovecotResult.status}`)
     }
 }

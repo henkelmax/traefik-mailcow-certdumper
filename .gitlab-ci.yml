@@ -1,0 +1,22 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - deploy
+
+variables:
+  IMAGE_TAG: $DOCKER_HUB_NAME/$IMAGE_NAME:latest
+
+before_script:
+  - docker login --password $DOCKER_HUB_PASSWORD --username $DOCKER_HUB_USERNAME $DOCKER_HUB_NAME
+
+deploy:
+  stage: deploy
+  script:
+    - docker build --pull -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+    - wget -q --post-data="" -O /dev/null $PORTAINER_WEBHOOK_URL || true
+  only:
+    - master

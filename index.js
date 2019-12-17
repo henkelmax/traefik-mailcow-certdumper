@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const { createLogger, format, transports } = require('winston')
-const { spawnSync } = require('child_process');
+const { spawnSync } = require('child_process')
 
 const logger = createLogger()
 
@@ -57,33 +57,33 @@ function dumpCerts() {
 
 function restartMailcow() {
     logger.info('Reloading postfix')
-    let postfixResult = spawnSync('docker exec $(docker ps -qaf name=postfix-mailcow) postfix reload')
+    let postfixResult = spawnSync('docker exec $(docker ps -qaf name=postfix-mailcow) postfix reload', { shell: '/bin/ash' })
     if (postfixResult.status !== 0) {
         printOutput(postfixResult.output)
         logger.error(`Reloading postfix failed with exit code ${postfixResult.status}: ${postfixResult.error}`)
     }
 
     logger.info('Reloading nginx')
-    let nginxResult = spawnSync('docker exec $(docker ps -qaf name=nginx-mailcow) nginx -s reload')
+    let nginxResult = spawnSync('docker exec $(docker ps -qaf name=nginx-mailcow) nginx -s reload', { shell: '/bin/ash' })
     if (nginxResult.status !== 0) {
         printOutput(nginxResult.output)
         logger.error(`Reloading nginx failed with exit code ${nginxResult.status}: ${nginxResult.error}`)
     }
 
     logger.info('Reloading dovecot')
-    let dovecotResult = spawnSync('docker exec $(docker ps -qaf name=dovecot-mailcow) dovecot reload')
+    let dovecotResult = spawnSync('docker exec $(docker ps -qaf name=dovecot-mailcow) dovecot reload', { shell: '/bin/ash' })
     if (dovecotResult.status !== 0) {
         printOutput(dovecotResult.output)
         logger.error(`Reloading dovecot failed with exit code ${dovecotResult.status}: ${dovecotResult.error}`)
     }
 }
 
-function printOutput(output){
-    if(!output){
+function printOutput(output) {
+    if (!output) {
         return
     }
 
-    for(let line of output){
+    for (let line of output) {
         logger.error(line)
     }
 }

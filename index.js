@@ -59,18 +59,31 @@ function restartMailcow() {
     logger.info('Reloading postfix')
     let postfixResult = spawnSync('docker exec $(docker ps -qaf name=postfix-mailcow) postfix reload')
     if (postfixResult.status !== 0) {
+        printOutput(postfixResult.output)
         logger.error(`Reloading postfix failed with exit code ${postfixResult.status}`)
     }
 
     logger.info('Reloading nginx')
     let nginxResult = spawnSync('docker exec $(docker ps -qaf name=nginx-mailcow) nginx -s reload')
     if (nginxResult.status !== 0) {
+        printOutput(nginxResult.output)
         logger.error(`Reloading nginx failed with exit code ${nginxResult.status}`)
     }
 
     logger.info('Reloading dovecot')
     let dovecotResult = spawnSync('docker exec $(docker ps -qaf name=dovecot-mailcow) dovecot reload')
     if (dovecotResult.status !== 0) {
+        printOutput(dovecotResult.output)
         logger.error(`Reloading dovecot failed with exit code ${dovecotResult.status}`)
+    }
+}
+
+function printOutput(output){
+    if(!output){
+        return
+    }
+    
+    for(let line of output){
+        logger.error(line)
     }
 }

@@ -7,10 +7,10 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: $DOCKER_HUB_NAME/$IMAGE_NAME:latest
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
 
 before_script:
-  - docker login --password $DOCKER_HUB_PASSWORD --username $DOCKER_HUB_USERNAME $DOCKER_HUB_NAME
+  - docker login --password $CI_REGISTRY_PASSWORD --username $CI_REGISTRY_USER $CI_REGISTRY
 
 deploy:
   stage: deploy

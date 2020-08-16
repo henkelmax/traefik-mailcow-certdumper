@@ -2,7 +2,7 @@
   "name": "traefik-mailcow-certdumper",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Max Henkel <max@maxhenkel.de>",
+  "author": "Max Henkel <mh@maxhenkel.de>",
   "license": "MIT",
   "dependencies": {
     "winston": "^3.3.3"

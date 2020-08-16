@@ -5,6 +5,6 @@
   "author": "Max Henkel <max@maxhenkel.de>",
   "license": "MIT",
   "dependencies": {
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   }
 }

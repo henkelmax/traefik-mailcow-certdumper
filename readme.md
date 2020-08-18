@@ -1,6 +1,9 @@
-# Traefik Mailcow Certdumper ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henkelmax/traefik-mailcow-certdumper/Build) ![GitHub issues](https://img.shields.io/github/issues-raw/henkelmax/traefik-mailcow-certdumper) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/henkelmax/traefik-mailcow-certdumper?include_prereleases)
+# Traefik Mailcow Certdumper ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henkelmax/traefik-mailcow-certdumper/Build) ![GitHub issues](https://img.shields.io/github/issues-raw/henkelmax/traefik-mailcow-certdumper) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/henkelmax/traefik-mailcow-certdumper?include_prereleases) ![](https://img.shields.io/docker/pulls/henkelmax/traefik-mailcow-certdumper)
+
 
 Dumps certificates from [Traefik](https://containo.us/traefik/) to use them in [Mailcow Dockerized](https://github.com/mailcow/mailcow-dockerized).
+
+### *[Docker Hub](https://hub.docker.com/r/henkelmax/traefik-mailcow-certdumper)*
 
 ## Environment Variables
 
@@ -18,7 +21,7 @@ Dumps certificates from [Traefik](https://containo.us/traefik/) to use them in [
 version: "3.3"
 services:
   certdumper:
-    image: 'docker.pkg.github.com/henkelmax/traefik-mailcow-certdumper/traefik-mailcow-certdumper:latest'
+    image: 'henkelmax/traefik-mailcow-certdumper:latest'
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock" # Used to restart the mailcow services after dumping
       - "/path/to/acme.json:/acme.json:ro" # The path to the acme.json

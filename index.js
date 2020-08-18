@@ -24,8 +24,8 @@ fs.watchFile(acmeJsonPath, (curr, prev) => {
 })
 
 logger.info('CertDumper started')
-logger.info(`Domain: '${acmeJsonPath}'`)
-logger.info(`ACME JSON path: '${domain}'`)
+logger.info(`Domain: '${domain}'`)
+logger.info(`ACME JSON path: '${acmeJsonPath}'`)
 logger.info(`Certificate path: '${certificatePath}'`)
 logger.info(`Key path: '${keyPath}'`)
 

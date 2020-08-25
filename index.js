@@ -58,22 +58,56 @@ function dumpCerts() {
 
 function restartMailcow() {
     logger.info('Reloading postfix')
-    let postfixResult = spawnSync('docker exec $(docker ps -qaf name=postfix-mailcow) postfix reload', { shell: '/bin/ash' })
-    if (postfixResult.status !== 0) {
+    let postfixResult = spawnSync(`
+container=$(docker ps -qaf name=postfix-mailcow)
+if [ $container ]
+then
+docker exec $container postfix reload
+else
+exit 126
+fi
+    `,
+        { shell: '/bin/ash' })
+    if (postfixResult.status == 126) {
+        logger.info('Postfix not running')
+    } else if (postfixResult.status !== 0) {
         printOutput(postfixResult.output)
         logger.error(`Reloading postfix failed with exit code ${postfixResult.status}: ${postfixResult.error}`)
     }
 
     logger.info('Reloading nginx')
-    let nginxResult = spawnSync('docker exec $(docker ps -qaf name=nginx-mailcow) nginx -s reload', { shell: '/bin/ash' })
-    if (nginxResult.status !== 0) {
+    let nginxResult = spawnSync(`
+container=$(docker ps -qaf name=nginx-mailcow)
+if [ $container ]
+then
+docker exec $container nginx -s reload
+else
+exit 126
+fi
+    `,
+        { shell: '/bin/ash' })
+    if (nginxResult.status == 126) {
+        logger.info('Nginx not running')
+    } else if (nginxResult.status !== 0) {
         printOutput(nginxResult.output)
         logger.error(`Reloading nginx failed with exit code ${nginxResult.status}: ${nginxResult.error}`)
     }
 
     logger.info('Reloading dovecot')
-    let dovecotResult = spawnSync('docker exec $(docker ps -qaf name=dovecot-mailcow) dovecot reload', { shell: '/bin/ash' })
-    if (dovecotResult.status !== 0) {
+    let dovecotResult = spawnSync(`
+container=$(docker ps -qaf name=dovecot-mailcow)
+if [ $container ]
+then
+docker exec $container dovecot reload
+else
+exit 126
+fi
+    `
+        ,
+        { shell: '/bin/ash' })
+    if (dovecotResult.status == 126) {
+        logger.info('Dovecot not running')
+    } else if (dovecotResult.status !== 0) {
         printOutput(dovecotResult.output)
         logger.error(`Reloading dovecot failed with exit code ${dovecotResult.status}: ${dovecotResult.error}`)
     }
@@ -85,6 +119,8 @@ function printOutput(output) {
     }
 
     for (let line of output) {
-        logger.error(line)
+        if (line && line !== "") {
+            logger.error(line)
+        }
     }
 }

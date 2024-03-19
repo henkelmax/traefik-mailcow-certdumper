@@ -13,6 +13,8 @@ RUN yarn install --production --silent
 
 COPY . .
 
+ENV NODE_ENV production
+
 ENTRYPOINT []
 
-CMD ["node","index.js"]
+CMD ["node", "index.js"]

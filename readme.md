@@ -1,4 +1,4 @@
-# Traefik Mailcow Certdumper ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henkelmax/traefik-mailcow-certdumper/Build) ![GitHub issues](https://img.shields.io/github/issues-raw/henkelmax/traefik-mailcow-certdumper) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/henkelmax/traefik-mailcow-certdumper?include_prereleases) ![](https://img.shields.io/docker/pulls/henkelmax/traefik-mailcow-certdumper)
+# Traefik Mailcow Certdumper
 
 
 Dumps certificates from [Traefik](https://containo.us/traefik/) to use them in [Mailcow Dockerized](https://github.com/mailcow/mailcow-dockerized).

@@ -13,10 +13,10 @@ const keyPath = process.env.KEY_PATH || './key.pem'
 const runAtStart = process.env.RUN_AT_START === 'true' || true
 
 
-if (process.env.NODE_ENV === 'production') {
-    logger.add(new transports.Console({ format: format.combine(format.timestamp(), format.json()), level: 'info' }))
-} else {
+if (process.env.NODE_ENV !== 'production') {
     logger.add(new transports.Console({ format: format.simple(), level: 'debug' }))
+} else {
+    logger.add(new transports.Console({ format: format.combine(format.timestamp(), format.json()), level: 'info' }))
 }
 
 fs.watchFile(acmeJsonPath, (curr, prev) => {
